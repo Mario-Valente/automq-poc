@@ -2,7 +2,7 @@ module "automq-byoc" {
   source = "AutoMQ/automq-byoc-environment/aws"
 
   # Set the identifier for the environment to be installed. This ID will be used for naming internal resources. The environment ID supports only uppercase and lowercase English letters, numbers, and hyphens (-). It must start with a letter and is limited to a length of 32 characters.
-  automq_byoc_env_id                       = "example"
+  automq_byoc_env_id                       = "example-mario-valente"
 
   # Set the target regionId of aws
   cloud_provider_region                    = "us-east-1"
