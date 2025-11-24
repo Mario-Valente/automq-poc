@@ -18,6 +18,9 @@ func main() {
 		kgo.ClientID("my-client"),
 		kgo.RequestTimeoutOverhead(10*time.Second),
 		kgo.RequestRetries(3),
+		kgo.ProducerBatchCompression(kgo.NoCompression()),    // Sem compressão
+		kgo.ProducerLinger(100*time.Millisecond),             // Aguardar batch
+		kgo.RecordPartitioner(kgo.StickyKeyPartitioner(nil)), // Particionamento por key
 	)
 
 	if err != nil {
@@ -51,12 +54,27 @@ func main() {
 	ctx2, cancel2 := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel2()
 
-	record := &kgo.Record{Topic: "quickstart-events", Value: []byte("bar")}
+	// Adicionar key e headers ao record
+	record := &kgo.Record{
+		Topic: "quickstart-events",
+		Key:   []byte("test-key"),
+		Value: []byte("test-message-from-go-client"),
+		Headers: []kgo.RecordHeader{
+			{Key: "source", Value: []byte("go-client")},
+		},
+	}
 	fmt.Println("Producing record...")
 
 	results := cl.ProduceSync(ctx2, record)
 	if err := results.FirstErr(); err != nil {
 		fmt.Printf("Error producing record: %v\n", err)
+
+		// Tentar descobrir mais detalhes do erro
+		for _, r := range results {
+			if r.Err != nil {
+				fmt.Printf("  Partition %d error: %v\n", r.Record.Partition, r.Err)
+			}
+		}
 		return
 	}
 
