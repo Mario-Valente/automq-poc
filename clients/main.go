@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	seeds := []string{"localhost:9092"}
+	seeds := []string{"localhost:9092"} // ajustar para a url do seu cluster automq depois de criado
 
 	cl, err := kgo.NewClient(
 		kgo.SeedBrokers(seeds...),
