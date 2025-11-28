@@ -69,7 +69,6 @@ func main() {
 	if err := results.FirstErr(); err != nil {
 		fmt.Printf("Error producing record: %v\n", err)
 
-		// Tentar descobrir mais detalhes do erro
 		for _, r := range results {
 			if r.Err != nil {
 				fmt.Printf("  Partition %d error: %v\n", r.Record.Partition, r.Err)
